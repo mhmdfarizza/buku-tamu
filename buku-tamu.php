@@ -7,29 +7,7 @@ include_once('templates/header.php');
 
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800">Buku Tamu</h1>
-<?php
-function tambah_tamu($data)
-{
-    global $koneksi; // Mengambil variabel $koneksi dari luar fungsi
 
-    // Mengambil data dari form dan mencegah XSS dengan htmlspecialchars
-    $kode        = htmlspecialchars($data["id_tamu"]);
-    $tanggal     = date("Y-m-d");
-    $nama_tamu   = htmlspecialchars($data["nama_tamu"]);
-    $alamat      = htmlspecialchars($data["alamat"]);
-    $no_hp       = htmlspecialchars($data["no_hp"]);
-    $bertemu     = htmlspecialchars($data["bertemu"]);
-    $kepentingan = htmlspecialchars($data["kepentingan"]);
-
-    // Query untuk menyimpan ke tabel buku_tamu
-    $query = "INSERT INTO buku_tamu VALUES ('$kode','$tanggal','$nama_tamu','$alamat','$no_hp', '$bertemu','$kepentingan')";
-
-    mysqli_query($koneksi, $query);
-
-    // Mengembalikan angka > 0 jika ada baris yang berhasil ditambahkan ke database
-    return mysqli_affected_rows($koneksi);
-}
-?>
     <?php
     // Logika simpan diletakkan di atas agar Alert muncul langsung di halaman utama
     if (isset($_POST['simpan'])) {
@@ -39,17 +17,6 @@ function tambah_tamu($data)
             echo '<div class="alert alert-danger" role="alert">Data gagal disimpan!</div>';
         }
     }
-
-    // Logika pembuatan ID Otomatis
-    $query_max = mysqli_query($koneksi, "SELECT max(id_tamu) as kodeTerbesar FROM buku_tamu");
-    $data_max  = mysqli_fetch_array($query_max);
-    $kodeTamu  = $data_max['kodeTerbesar'];
-
-    $urutan = (int) substr($kodeTamu, 2, 3);
-    $urutan++;
-
-    $huruf = "zt";
-    $kodeTamuBaru = $huruf . sprintf("%03s", $urutan);
     ?>
 
     <!-- DataTales Example -->
@@ -61,7 +28,7 @@ function tambah_tamu($data)
             </button>
         </div>
         
-        <!-- Modal (Struktur dirapikan) -->
+        <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -71,11 +38,9 @@ function tambah_tamu($data)
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <!-- Form dipindah agar membungkus body dan footer modal -->
+                    
                     <form method="post" action="">
                         <div class="modal-body">
-                            <input type="hidden" name="id_tamu" id="id_tamu" value="<?= $kodeTamuBaru ?>">
-
                             <div class="form-group row">
                                 <label for="nama_tamu" class="col-sm-4 col-form-label">Nama Tamu</label>
                                 <div class="col-sm-8">
@@ -140,10 +105,9 @@ function tambah_tamu($data)
                     <tbody>
                         <?php
                         $no = 1;
-                        // PERBAIKAN: Menggunakan fungsi bawaan mysqli dan fetch array (while loop)
-                        $buku_tamu = mysqli_query($koneksi, "SELECT * FROM buku_tamu");
+                        // Query mengambil data terbaru (diurutkan berdasarkan id_tamu terbesar/terbaru)
+                        $buku_tamu = mysqli_query($koneksi, "SELECT * FROM buku_tamu ORDER BY id_tamu DESC");
                         
-                        // Cek apakah query berhasil mengembalikan data
                         if ($buku_tamu) {
                             while($tamu = mysqli_fetch_array($buku_tamu)) : 
                         ?>
@@ -156,8 +120,8 @@ function tambah_tamu($data)
                             <td><?= $tamu['bertemu'] ?></td>
                             <td><?= $tamu['kepentingan'] ?></td>
                             <td>
-                                <button class="btn btn-success" type="button">Ubah</button> 
-                                <button class="btn btn-danger" type="button">Hapus</button>
+                                <a class="btn btn-success btn-sm" href="edit-tamu.php?id=<?= $tamu['id_tamu']?>">Ubah</a> 
+                                <button class="btn btn-danger btn-sm" type="button">Hapus</button>
                             </td>
                         </tr>
                         <?php 

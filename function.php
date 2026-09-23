@@ -1,23 +1,24 @@
 <?php
-// panggil file koneksi.php
-require_once('koneksi.php');
+// Koneksi database
+$koneksi = mysqli_connect("localhost", "root", "", "app_bukutamu"); 
 
-// membuat query ke / dari database
-function query($query) {
-    global $koneksi;
-    $result = mysqli_query($koneksi, $query);
-    $rows = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $rows[] = $row;
-    }
-    return $rows;
-
-// function tambah data
+// Fungsi untuk menambah data tamu baru
 function tambah_tamu($data)
 {
     global $koneksi;
 
-    $kode        = htmlspecialchars($data["id_tamu"]);
+    // Generate ID otomatis (contoh: zt001, zt002)
+    $query_max = mysqli_query($koneksi, "SELECT max(id_tamu) as kodeTerbesar FROM buku_tamu");
+    $data_max  = mysqli_fetch_array($query_max);
+    $kodeTamu  = $data_max['kodeTerbesar'];
+
+    $urutan = $kodeTamu ? (int) substr($kodeTamu, 2, 3) : 0;
+    $urutan++;
+    
+    $huruf = "zt";
+    $kode_baru = $huruf . sprintf("%03s", $urutan);
+
+    // Persiapan data dari form
     $tanggal     = date("Y-m-d");
     $nama_tamu   = htmlspecialchars($data["nama_tamu"]);
     $alamat      = htmlspecialchars($data["alamat"]);
@@ -25,11 +26,48 @@ function tambah_tamu($data)
     $bertemu     = htmlspecialchars($data["bertemu"]);
     $kepentingan = htmlspecialchars($data["kepentingan"]);
 
-    $query = "INSERT INTO buku_tamu VALUES ('$kode','$tanggal','$nama_tamu','$alamat','$no_hp', '$bertemu','$kepentingan')";
+    // Proses simpan ke database
+    $query = "INSERT INTO buku_tamu VALUES ('$kode_baru','$tanggal','$nama_tamu','$alamat','$no_hp', '$bertemu','$kepentingan')";
+    mysqli_query($koneksi, $query);
+
+    return mysqli_affected_rows($koneksi);
+}
+
+// Fungsi untuk mengubah data tamu
+function ubah_tamu($data)
+{
+    global $koneksi;
+
+    // Persiapan data dari form
+    $id          = htmlspecialchars($data["id_tamu"]);
+    $nama_tamu   = htmlspecialchars($data["nama_tamu"]);
+    $alamat      = htmlspecialchars($data["alamat"]);
+    $no_hp       = htmlspecialchars($data["no_hp"]);
+    $bertemu     = htmlspecialchars($data["bertemu"]);
+    $kepentingan = htmlspecialchars($data["kepentingan"]);
+
+    // Proses update ke database
+    $query = "UPDATE buku_tamu SET 
+                nama_tamu    = '$nama_tamu',
+                alamat       = '$alamat',
+                no_hp        = '$no_hp',
+                bertemu      = '$bertemu',
+                kepentingan  = '$kepentingan'
+              WHERE id_tamu = '$id'";
 
     mysqli_query($koneksi, $query);
 
     return mysqli_affected_rows($koneksi);
 }
 
+// Fungsi untuk mempermudah pemanggilan query SELECT
+function query($query) {
+    global $koneksi;
+    $result = mysqli_query($koneksi, $query);
+    $rows = [];
+    while ($row = mysqli_fetch_array($result)) {
+        $rows[] = $row;
+    }
+    return $rows;
 }
+?>
