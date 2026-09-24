@@ -1,6 +1,12 @@
 <?php
 require_once('function.php');
 include_once('templates/header.php');
+
+// Izinkan jika rolenya admin ATAU operator
+if($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'operator') {
+    echo "<script>alert('Anda tidak memiliki akses'); window.location.href='index.php';</script>";
+    exit;
+}
 ?>
 <!-- Begin Page Content -->
 <div class="container-fluid">

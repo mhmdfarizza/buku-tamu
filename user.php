@@ -1,6 +1,15 @@
 <?php
 require_once('function.php');
 include_once('templates/header.php');
+
+// pengecekan user role bukan admin maka tidak boleh mengakses halaman
+if($_SESSION['role'] != 'admin') {
+    echo "<script>
+            alert('Anda tidak memiliki akses');
+            window.location.href='index.php';
+          </script>";
+    exit; // Wajib ditambahkan agar sistem berhenti merender sisa halaman
+}
 ?>
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -128,7 +137,7 @@ include_once('templates/header.php');
                             <td><?= $user['username'] ?></td>
                             <td><?= $user['user_role'] ?></td>
                             <td>
-                                <button type="button" class="btn btn-info btn-icon-split" data-toggle="modal" data-target="#gantiPassword" data-id="<?= $user['id_user']?>">
+                                <button type="button" class="btn btn-info btn-icon-split btn-sm" data-toggle="modal" data-target="#gantiPassword" data-id="<?= $user['id_user']?>">
                                     <span class="text">Ganti Password</span>
                                 </button>
                                 <a class="btn btn-success btn-sm" href="edit-user.php?id=<?= $user['id_user'] ?>">Ubah</a>

@@ -54,6 +54,44 @@ if (!isset($_SESSION['login'])) {
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="index.php">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <?php
+            // cek apabila ada user login dan user role nya adalah admin maka tampilkan user[cite: 11]
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') :
+            ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="user.php">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>User</span></a>
+                </li>
+            <?php endif; ?>
+
+            <?php
+            // cek apabila ada user login dan user role nya adalah operator maka tampilkan buku-tamu
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'operator') :
+            ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="buku-tamu.php">
+                        <i class="fas fa-fw fa-book-open"></i>
+                        <span>Buku Tamu</span></a>
+                </li>
+            <?php endif; ?>
+
+            <li class="nav-item">
+                <a class="nav-link" href="laporan.php">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Laporan</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
             <?php
             // cek apabila ada user login maka tampilkan logout
             if(isset($_SESSION['login'])) :
@@ -64,34 +102,6 @@ if (!isset($_SESSION['login'])) {
                     <span>Logout</span></a>
             </li>
             <?php endif; ?>
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="buku-tamu.php">
-                    <i class="fas fa-fw fa-book-open"></i>
-                    <span>Buku Tamu</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="laporan.php">
-                    <i class="fas fa-fw fa-file-alt"></i>
-                    <span>Laporan</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="user.php">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>User</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
