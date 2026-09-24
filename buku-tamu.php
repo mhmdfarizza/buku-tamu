@@ -45,7 +45,7 @@ if($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'operator') {
                         </button>
                     </div>
                     
-                    <form method="post" action="">
+                    <form method="post" action="" enctype="multipart/form-data">
                         <div class="modal-body">
                             <div class="form-group row">
                                 <label for="nama_tamu" class="col-sm-4 col-form-label">Nama Tamu</label>
@@ -80,6 +80,14 @@ if($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'operator') {
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control" id="kepentingan" name="kepentingan" required>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="gambar" class="col-sm-3 col-form-label">Unggah Foto</label>
+                            <div class="custom-file col-sm-8">
+                                <input type="file" class="custom-file-input" id="gambar" name="gambar">
+                                <label class="custom-file-label" for="gambar">Choose file</label>
                             </div>
                         </div>
 
