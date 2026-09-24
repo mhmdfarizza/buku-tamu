@@ -1,0 +1,17 @@
+{
+    "name": "faikal/buku-tamu",
+    "autoload": {
+        "psr-4": {
+            "Faikal\\BukuTamu\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "M. FARIZ Z.A",
+            "email": "mhmdfarizza@gmail.com"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^5.10"
+    }
+}
