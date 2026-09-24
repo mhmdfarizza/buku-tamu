@@ -6,7 +6,7 @@ include_once('templates/header.php');
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">Buku Tamu</h1>
+    <h1 class="h3 mb-4 text-gray-800">Data User</h1>
 
     <?php
     // Logika simpan diletakkan di atas agar Alert muncul langsung di halaman utama
@@ -24,7 +24,7 @@ include_once('templates/header.php');
         <div class="card-header py-3">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                + Tambah Tamu
+                + Tambah user
             </button>
         </div>
         
@@ -93,41 +93,28 @@ include_once('templates/header.php');
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Nama Tamu</th>
-                            <th>Alamat</th>
-                            <th>No. Telp/HP</th>
-                            <th>Bertemu Dengan</th>
-                            <th>Kepentingan</th>
-                            <th>Action</th>
+                            <th>Username</th>
+                            <th>User Role</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
+                        // penomoran auto-increment
                         $no = 1;
-                        // Query mengambil data terbaru (diurutkan berdasarkan id_tamu terbesar/terbaru)
-                        $buku_tamu = mysqli_query($koneksi, "SELECT * FROM buku_tamu ORDER BY id_tamu DESC");
-                        
-                        if ($buku_tamu) {
-                            while($tamu = mysqli_fetch_array($buku_tamu)) : 
-                        ?>
+                        // Query untuk memanggil semua data dari tabel users
+                        $users = query("SELECT * FROM users");
+                        foreach ($users as $user) : ?>
                         <tr>
                             <td><?= $no++; ?></td>
-                            <td><?= $tamu['tanggal'] ?></td>
-                            <td><?= $tamu['nama_tamu'] ?></td>
-                            <td><?= $tamu['alamat'] ?></td>
-                            <td><?= $tamu['no_hp'] ?></td>
-                            <td><?= $tamu['bertemu'] ?></td>
-                            <td><?= $tamu['kepentingan'] ?></td>
+                            <td><?= $user['username'] ?></td>
+                            <td><?= $user['user_role'] ?></td>
                             <td>
-                                <a class="btn btn-success" href="edit-tamu.php?id=<?= $tamu['id_tamu']?>">Ubah</a>
-                                <a onclick="confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger" href="hapus-tamu.php?id=<?= $tamu['id_tamu']?>">Hapus</a>
+                                <a class="btn btn-success" href="edit-user.php?id=<?= $user['id_user'] ?>">Ubah</a>
+                                <a onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger" href="hapus-user.php?id=<?= $user['id_user'] ?>">Hapus</a>
                             </td>
                         </tr>
-                        <?php 
-                            endwhile; 
-                        } 
-                        ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
