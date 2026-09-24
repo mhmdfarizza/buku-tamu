@@ -113,6 +113,7 @@ if($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'operator') {
                             <th>No. Telp/HP</th>
                             <th>Bertemu Dengan</th>
                             <th>Kepentingan</th>
+                            <th>Gambar Foto</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -133,6 +134,17 @@ if($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'operator') {
                             <td><?= $tamu['no_hp'] ?></td>
                             <td><?= $tamu['bertemu'] ?></td>
                             <td><?= $tamu['kepentingan'] ?></td>
+                            
+                            <!-- TAMBAHKAN KOLOM GAMBAR INI -->
+                            <td>
+                                <!-- Cek apakah gambar ada, agar tidak error jika tamu tidak mengunggah foto -->
+                                <?php if($tamu['gambar']) : ?>
+                                    <img src="assets/upload_gambar/<?= $tamu['gambar'] ?>" alt="Foto" width="80">
+                                <?php else : ?>
+                                    <span>Tidak ada foto</span>
+                                <?php endif; ?>
+                            </td>
+
                             <td>
                                 <a class="btn btn-success" href="edit-tamu.php?id=<?= $tamu['id_tamu']?>">Ubah</a>
                                 <a onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger" href="hapus-tamu.php?id=<?= $tamu['id_tamu']?>">Hapus</a>

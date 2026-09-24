@@ -33,7 +33,7 @@ function tambah_tamu($data)
     }
 
     // Proses simpan ke database
-    $query = "INSERT INTO buku_tamu VALUES ('$kode_baru','$tanggal','$nama_tamu','$alamat','$no_hp', '$bertemu','$kepentingan', 'gambar')";
+    $query = "INSERT INTO buku_tamu VALUES ('$kode_baru','$tanggal','$nama_tamu','$alamat','$no_hp', '$bertemu','$kepentingan', '$gambar')";
     mysqli_query($koneksi, $query);
 
     return mysqli_affected_rows($koneksi);
@@ -52,13 +52,6 @@ function ubah_tamu($data)
     $bertemu     = htmlspecialchars($data["bertemu"]);
     $kepentingan = htmlspecialchars($data["kepentingan"]);
     $gambar      = htmlspecialchars($data['gambarLama']);
-
-    // cek apakah user pilih gambar baru atau tidak
-    if ($_FILES['gambar']['error'] === 4) {
-        $gambar = $gambarLama;
-    } else {
-        $gambar = uploadGambar();
-    }
 
     // Proses update ke database
     $query = "UPDATE buku_tamu SET 
