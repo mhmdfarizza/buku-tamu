@@ -82,10 +82,22 @@ function hapus_tamu($id) {
     return mysqli_affected_rows($koneksi);
 }
 
+// PERBAIKAN: function tambah data user
 function tambah_user($data){
     global $koneksi;
 
-    $kode        = htmlspecialchars($data["id_user"]);
+    // Generate ID otomatis (contoh: ur001, ur002)
+    $query_max = mysqli_query($koneksi, "SELECT max(id_user) as kodeTerbesar FROM users");
+    $data_max  = mysqli_fetch_array($query_max);
+    $kodeUserDB = $data_max['kodeTerbesar'];
+
+    $urutan = $kodeUserDB ? (int) substr($kodeUserDB, 2, 3) : 0;
+    $urutan++;
+
+    $huruf = "ur";
+    $kode_baru = $huruf . sprintf("%03s", $urutan);
+
+    // Ambil data dari form
     $username    = htmlspecialchars($data["username"]);
     $password    = htmlspecialchars($data["password"]);
     $user_role   = htmlspecialchars($data["user_role"]);
@@ -93,14 +105,15 @@ function tambah_user($data){
     // Enkripsi password dengan password_hash
     $password_hash = password_hash($password,PASSWORD_DEFAULT);
 
-    $query = "INSERT INTO users VALUES ('$kode','$username','$password_hash','$user_role')";
+    // Proses simpan ke database menggunakan $kode_baru
+    $query = "INSERT INTO users VALUES ('$kode_baru','$username','$password_hash','$user_role')";
 
     mysqli_query($koneksi, $query);
 
     return mysqli_affected_rows($koneksi);
 }
 
-// function ubah data tamu
+// function ubah data user
 function ubah_user($data)
 {
     global $koneksi;
@@ -124,6 +137,23 @@ function hapus_user($id) {
     global $koneksi;
 
     $query = "DELETE FROM users WHERE id_user = '$id'";
+
+    mysqli_query($koneksi, $query);
+
+    return mysqli_affected_rows($koneksi);
+}
+
+// function ganti password user
+function ganti_password($data) {
+    global $koneksi;
+
+    $kode          = htmlspecialchars($data["id_user"]);
+    $password      = htmlspecialchars($data["password"]);
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    $query = "UPDATE users SET 
+                password    = '$password_hash'
+              WHERE id_user = '$kode'";
 
     mysqli_query($koneksi, $query);
 

@@ -16,6 +16,20 @@ include_once('templates/header.php');
         } else {
             echo '<div class="alert alert-danger" role="alert">Data gagal disimpan!</div>';
         }
+    } else if (isset($_POST['ganti_password'])) {
+        if (ganti_password($_POST) > 0) {
+        ?>
+            <div class="alert alert-success" role="alert">
+                Password berhasil diubah!
+            </div>
+        <?php
+        } else {
+        ?>
+            <div class="alert alert-danger" role="alert">
+                Password gagal diubah!
+            </div>
+        <?php
+        }
     }
 
     // Logika Pembuatan ID Otomatis untuk User (Misal format: ur001, ur002, dst)
@@ -51,7 +65,7 @@ include_once('templates/header.php');
                         </button>
                     </div>
                     
-                    <!-- Form diperbaiki, hanya 1 form yang membungkus body dan footer -->
+        
                     <form method="post" action="">
                         <div class="modal-body">
                             <!-- Input Hidden untuk mengirim ID Otomatis -->
@@ -108,11 +122,15 @@ include_once('templates/header.php');
                         $no = 1;
                         $users = query("SELECT * FROM users");
                         foreach ($users as $user) : ?>
+                        
                         <tr>
                             <td><?= $no++; ?></td>
                             <td><?= $user['username'] ?></td>
                             <td><?= $user['user_role'] ?></td>
                             <td>
+                                <button type="button" class="btn btn-info btn-icon-split" data-toggle="modal" data-target="#gantiPassword" data-id="<?= $user['id_user']?>">
+                                    <span class="text">Ganti Password</span>
+                                </button>
                                 <a class="btn btn-success btn-sm" href="edit-user.php?id=<?= $user['id_user'] ?>">Ubah</a>
                                 <a onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger btn-sm" href="hapus-user.php?id=<?= $user['id_user'] ?>">Hapus</a>
                             </td>
@@ -121,6 +139,34 @@ include_once('templates/header.php');
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Ganti Password -->
+<div class="modal fade" id="gantiPassword" tabindex="-1" aria-labelledby="gantiPasswordLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gantiPasswordLabel">Ganti Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="">
+                    <input type="hidden" name="id_user" id="id_user">
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-4 col-form-label">Password Baru</label>
+                        <div class="col-sm-7">
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+                <button type="submit" name="ganti_password" class="btn btn-primary">Simpan</button>
+            </div>
+                </form>
         </div>
     </div>
 </div>
