@@ -11,12 +11,24 @@ include_once('templates/header.php');
     <?php
     // Logika simpan diletakkan di atas agar Alert muncul langsung di halaman utama
     if (isset($_POST['simpan'])) {
-        if (tambah_tamu($_POST) > 0) {
+        if (tambah_user($_POST) > 0) {
             echo '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>';
         } else {
             echo '<div class="alert alert-danger" role="alert">Data gagal disimpan!</div>';
         }
     }
+
+    // Logika Pembuatan ID Otomatis untuk User (Misal format: ur001, ur002, dst)
+    // Jika id_user di database Anda diset Auto Increment, Anda bisa mengabaikan logika ini
+    $query_max = mysqli_query($koneksi, "SELECT max(id_user) as kodeTerbesar FROM users");
+    $data_max  = mysqli_fetch_array($query_max);
+    $kodeUserDB = $data_max['kodeTerbesar'];
+
+    $urutan = $kodeUserDB ? (int) substr($kodeUserDB, 2, 3) : 0;
+    $urutan++;
+
+    $huruf = "ur"; // Awalan ID User (bisa disesuaikan, misalnya 'us' atau 'ur')
+    $kodeuser = $huruf . sprintf("%03s", $urutan);
     ?>
 
     <!-- DataTales Example -->
@@ -33,46 +45,39 @@ include_once('templates/header.php');
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tambah Tamu</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Tambah User</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     
+                    <!-- Form diperbaiki, hanya 1 form yang membungkus body dan footer -->
                     <form method="post" action="">
                         <div class="modal-body">
+                            <!-- Input Hidden untuk mengirim ID Otomatis -->
+                            <input type="hidden" name="id_user" id="id_user" value="<?= $kodeuser ?>">
+                            
                             <div class="form-group row">
-                                <label for="nama_tamu" class="col-sm-4 col-form-label">Nama Tamu</label>
+                                <label for="username" class="col-sm-3 col-form-label">Username</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="nama_tamu" name="nama_tamu" required>
+                                    <input type="text" class="form-control" id="username" name="username" required>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group row">
-                                <label for="alamat" class="col-sm-4 col-form-label">Alamat</label>
+                                <label for="password" class="col-sm-3 col-form-label">Password</label>
                                 <div class="col-sm-8">
-                                    <textarea class="form-control" id="alamat" name="alamat" required></textarea>
+                                    <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group row">
-                                <label for="no_hp" class="col-sm-4 col-form-label">No. Telepon</label>
+                                <label for="user_role" class="col-sm-3 col-form-label">User Role</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="no_hp" name="no_hp" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="bertemu" class="col-sm-4 col-form-label">Bertemu dengan</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="bertemu" name="bertemu" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="kepentingan" class="col-sm-4 col-form-label">Kepentingan</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="kepentingan" name="kepentingan" required>
+                                    <select class="form-control" id="user_role" name="user_role" required>
+                                        <option value="admin">Administrator</option>
+                                        <option value="operator">Operator</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -100,9 +105,7 @@ include_once('templates/header.php');
                     </thead>
                     <tbody>
                         <?php
-                        // penomoran auto-increment
                         $no = 1;
-                        // Query untuk memanggil semua data dari tabel users
                         $users = query("SELECT * FROM users");
                         foreach ($users as $user) : ?>
                         <tr>
@@ -110,8 +113,8 @@ include_once('templates/header.php');
                             <td><?= $user['username'] ?></td>
                             <td><?= $user['user_role'] ?></td>
                             <td>
-                                <a class="btn btn-success" href="edit-user.php?id=<?= $user['id_user'] ?>">Ubah</a>
-                                <a onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger" href="hapus-user.php?id=<?= $user['id_user'] ?>">Hapus</a>
+                                <a class="btn btn-success btn-sm" href="edit-user.php?id=<?= $user['id_user'] ?>">Ubah</a>
+                                <a onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger btn-sm" href="hapus-user.php?id=<?= $user['id_user'] ?>">Hapus</a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
