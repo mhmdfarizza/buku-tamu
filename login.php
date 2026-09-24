@@ -1,4 +1,13 @@
 <?php
+// memulai session
+session_start();
+
+// cek bila ada user yang sudah login maka akan redirect ke halaman  dashboard
+if(isset($_SESSION['login'])) {
+    header('location: index.php');
+    exit;
+}
+
 require 'koneksi.php';
 if(isset($_POST['login'])) {
     $username = $_POST['username'];
@@ -13,6 +22,8 @@ if(isset($_POST['login'])) {
         $row = mysqli_fetch_assoc($result);
 
         if(password_verify($password, $row['password'])) {
+            $_SESSION['login'] = true;
+            $_SESSION['username'] = $username;
 
             // login berhasil
             header("Location: index.php");
@@ -21,7 +32,6 @@ if(isset($_POST['login'])) {
     }
 
     $error = true;
-
 }
 ?>
 
@@ -80,13 +90,11 @@ if(isset($_POST['login'])) {
                                     
                                     <form method="post" action="" class="user">
                                         <div class="form-group">
-                                            <!-- Ubah type="email" jadi "text", tambah name="username" -->
                                             <input type="text" class="form-control form-control-user"
                                                 id="username" name="username"
                                                 placeholder="Username ...">
                                         </div>
                                         <div class="form-group">
-                                            <!-- Tambah name="password" -->
                                             <input type="password" class="form-control form-control-user"
                                                 id="password" name="password" placeholder="Password..">
                                         </div>
@@ -97,12 +105,10 @@ if(isset($_POST['login'])) {
                                                     Me</label>
                                             </div>
                                         </div>
-                                        <!-- Ubah tag <a> menjadi <button type="submit"> -->
                                         <button type="submit" name="login" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>
                                     </form>
-                                    <!-- PERBAIKAN FORM SELESAI -->
                                     
                                     <hr>
                                     <div class="text-center">
