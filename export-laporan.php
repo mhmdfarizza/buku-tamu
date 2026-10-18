@@ -8,13 +8,16 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-$sheet->setCellValue('A1', 'No');
-$sheet->setCellValue('B1', 'TANGGAL');
-$sheet->setCellValue('C1', 'NAMA TAMU');
-$sheet->setCellValue('D1', 'ALAMAT');
-$sheet->setCellValue('E1', 'NO TELEPON/HP');
-$sheet->setCellValue('F1', 'BERTEMU DENGAN');
-$sheet->setCellValue('G1', 'KEPENTINGAN');
+$sheet->mergeCells('A1:G1');
+$sheet->getStyle('A1:G1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+$sheet->setCellValue('A1', 'Laporan Buku-Tamu');
+$sheet->setCellValue('A2', 'No');
+$sheet->setCellValue('B2', 'TANGGAL');
+$sheet->setCellValue('C2', 'NAMA TAMU');
+$sheet->setCellValue('D2', 'ALAMAT');
+$sheet->setCellValue('E2', 'NO TELEPON/HP');
+$sheet->setCellValue('F2', 'BERTEMU DENGAN');
+$sheet->setCellValue('G2', 'KEPENTINGAN');
 
 if (isset($_GET['cari'])) {
     $p_awal = $_GET['p_awal'];
@@ -24,7 +27,7 @@ if (isset($_GET['cari'])) {
     $data = mysqli_query($koneksi, "SELECT * FROM buku_tamu");
 }
 
-$i = 2;
+$i = 3;
 $no = 1;
 
 while ($d = mysqli_fetch_array($data)) {

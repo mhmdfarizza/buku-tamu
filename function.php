@@ -51,7 +51,12 @@ function ubah_tamu($data)
     $no_hp       = htmlspecialchars($data["no_hp"]);
     $bertemu     = htmlspecialchars($data["bertemu"]);
     $kepentingan = htmlspecialchars($data["kepentingan"]);
-    $gambar      = htmlspecialchars($data['gambarLama']);
+    $gambarLama  = htmlspecialchars($data['gambarLama']);
+
+    $gambar = uploadGambar();
+    if (!$gambar) {
+        $gambar = $gambarLama;
+    }
 
     // Proses update ke database
     $query = "UPDATE buku_tamu SET 
@@ -110,6 +115,19 @@ function tambah_user($data){
     $password    = htmlspecialchars($data["password"]);
     $user_role   = htmlspecialchars($data["user_role"]);
 
+    if (empty($password)) {
+        echo "<script>
+                alert('Password tidak boleh kosong!');
+              </script>";
+        return false;
+    }
+
+    if (strlen($password) < 6) {
+        echo "<script>
+                alert('Password minimal 6 karakter!');
+              </script>";
+        return false;
+    }   
     // Enkripsi password dengan password_hash
     $password_hash = password_hash($password,PASSWORD_DEFAULT);
 
@@ -157,6 +175,19 @@ function ganti_password($data) {
 
     $kode          = htmlspecialchars($data["id_user"]);
     $password      = htmlspecialchars($data["password"]);
+    if (empty($password)) {
+        echo "<script>
+                alert('Password tidak boleh kosong!');
+              </script>";
+        return false;
+    }
+
+    if (strlen($password) < 6) {
+        echo "<script>
+                alert('Password minimal 6 karakter!');
+              </script>";
+        return false;
+    }
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
     $query = "UPDATE users SET 
